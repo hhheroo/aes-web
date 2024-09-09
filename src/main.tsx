@@ -6,6 +6,7 @@ import EncBase64 from 'crypto-js/enc-base64';
 import EncUtf8 from 'crypto-js/enc-utf8';
 import WordArray from 'crypto-js/lib-typedarrays';
 import { Button, Input, Typography, Cell, Toast } from 'react-vant';
+import { ClosedEye, EyeO } from '@react-vant/icons';
 import CodeEditor from '@uiw/react-textarea-code-editor';
 import './main.css';
 import './globals';
@@ -24,6 +25,7 @@ function downloadFile(data: string, filename: string) {
 
 function App() {
   const browserActive = useBrowserActive();
+  const [showPassword, setShowPassword] = useState(false);
   const [password, setPassword] = useState('');
   const [content, setContent] = useState('');
   const $file = useRef<HTMLInputElement>(null);
@@ -92,7 +94,7 @@ function App() {
     } catch (e) {
       Toast.fail({
         message: `解密失败\n${String(e)}`
-      })
+      });
       return '';
     }
   }
@@ -119,6 +121,16 @@ function App() {
   function onEncryptBtnClick() {
     downloadFile(encrypt(content), 'data.enc');
   }
+
+  function onTogglePasswordShowBtnClick() {
+    setShowPassword(val => !val);
+  }
+
+  const ShowPasswordBtn = showPassword ? (
+    <EyeO onClick={onTogglePasswordShowBtnClick} />
+  ) : (
+    <ClosedEye onClick={onTogglePasswordShowBtnClick} />
+  );
 
   return (
     <>
@@ -153,6 +165,8 @@ function App() {
           clearable
           value={password}
           onChange={setPassword}
+          type={showPassword ? 'text' : 'password'}
+          suffix={ShowPasswordBtn}
         />
       </Cell>
 
